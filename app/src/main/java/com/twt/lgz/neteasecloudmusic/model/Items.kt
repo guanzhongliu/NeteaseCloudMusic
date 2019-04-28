@@ -95,6 +95,7 @@ class PlaylistInfoItem(val name: String?, val artist: String?, val album: String
             holder.artist.text = item.artist
             holder.album.text = item.album
             holder.textView.text = " - "
+            holder.index.visibility = View.GONE
 
         }
     }
