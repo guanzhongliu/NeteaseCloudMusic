@@ -13,6 +13,7 @@ import cn.edu.twt.retrox.recyclerviewdsl.ItemManager
 import com.orhanobut.hawk.Hawk
 import com.twt.lgz.neteasecloudmusic.R
 import com.twt.lgz.neteasecloudmusic.model.Bean.MyPlaylistBean
+import com.twt.lgz.neteasecloudmusic.model.PlaylistInfoItem
 import com.twt.lgz.neteasecloudmusic.model.PlaylistItem
 import com.twt.lgz.neteasecloudmusic.model.Status
 import com.twt.lgz.neteasecloudmusic.netservice.NetService
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var itemManager: ItemManager
     private lateinit var itemAdapter: ItemAdapter
-    val list: MutableList<Item>? = null
+    val list: MutableList<Item> = arrayListOf()
 
     @SuppressLint("CommitPrefEdits")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,10 +81,10 @@ class MainActivity : AppCompatActivity() {
         val data = Hawk.get<List<MyPlaylistBean.PlaylistBean>>("playlist")
         data?.forEach {
             val item = PlaylistItem(it.name, it.trackCount.toString() + "首")
-            list?.add(item)
+            list.add(item)
         }
         playlist_rc.apply {
-            itemManager = ItemManager(list!!)
+            itemManager = ItemManager(list)
             itemAdapter = ItemAdapter(itemManager)
             adapter = itemAdapter
             layoutManager = LinearLayoutManager(this.context)
