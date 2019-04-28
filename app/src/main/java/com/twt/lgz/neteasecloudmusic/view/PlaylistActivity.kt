@@ -10,5 +10,7 @@ class PlaylistActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playlist)
         supportActionBar?.hide()
+
+
     }
 }

@@ -1,5 +1,6 @@
 package com.twt.lgz.neteasecloudmusic.netservice
 
+import com.twt.lgz.neteasecloudmusic.model.Bean.ListInfoBean
 import com.twt.lgz.neteasecloudmusic.model.Bean.LoginBean
 import com.twt.lgz.neteasecloudmusic.model.MainModel
 import com.twt.lgz.neteasecloudmusic.model.Bean.MyPlaylistBean
@@ -16,7 +17,9 @@ interface ApiService {
     fun logout(): Call<ResponseBody>
 
     @GET("/user/playlist")
-    fun getPlaylist(@Query("uid") uid: Int): Call<MyPlaylistBean>
+    fun getPlaylist(@Query("uid") uid: String?): Call<MyPlaylistBean>
 
+    @GET("/playlist/detail")
+    fun getListInfo(@Query("id") id: String?): Call<ListInfoBean>
     companion object : ApiService by MainModel()
 }

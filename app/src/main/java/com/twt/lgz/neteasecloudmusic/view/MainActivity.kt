@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
             startActivity<PrepareActivity>()
             finish()
         }
-        NetService.getPlaylist(sharedPreferences.getInt("id", 0)) { status, data ->
+        NetService.getPlaylist(sharedPreferences.getString("id", "0")) { status, data ->
             launch(UI) {
                 when (status) {
                     Status.Success -> {
@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
     fun updatePlaylist() {
         val data = Hawk.get<List<MyPlaylistBean.PlaylistBean>>("playlist")
         data?.forEach {
-            val item = PlaylistItem(it.name, it.trackCount.toString() + "首", it.coverImgUrl)
+            val item = PlaylistItem(it.name, it.trackCount + "首", it.coverImgUrl)
             list.add(item)
         }
         playlist_rc.apply {

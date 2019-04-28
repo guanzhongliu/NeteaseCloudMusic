@@ -13,7 +13,7 @@ object DataBase {
             .putInt("gender", loginBean.profile?.gender ?: 0)
             .putString("phoneNum", phone)
             .putString("pwd", pwd)
-            .putInt("id", loginBean.account?.id ?: 0)
+            .putString("id", loginBean.account?.id ?: "0")
             .putString("background_url", loginBean.profile?.backgroundUrl).apply()
     }
 

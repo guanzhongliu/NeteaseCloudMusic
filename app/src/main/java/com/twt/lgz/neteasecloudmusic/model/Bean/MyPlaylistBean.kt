@@ -59,7 +59,7 @@ class MyPlaylistBean {
         var userId: Int = 0
         var specialType: Int = 0
         var isAnonimous: Boolean = false
-        var trackCount: Int = 0
+        var trackCount: String? = null
         var commentThreadId: String? = null
         var totalDuration: Int = 0
         var privacy: Int = 0

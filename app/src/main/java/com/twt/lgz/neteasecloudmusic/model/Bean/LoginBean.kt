@@ -10,7 +10,7 @@ class LoginBean {
 
     class AccountBean {
 
-        var id: Int = 0
+        var id: String? = null
         var userName: String? = null
         var type: Int = 0
         var status: Int = 0

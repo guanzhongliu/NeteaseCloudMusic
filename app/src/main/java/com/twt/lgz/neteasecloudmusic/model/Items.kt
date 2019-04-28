@@ -39,9 +39,11 @@ class PlaylistItem(val text: String?, val num: String?, val iv: String?) : Item 
             item as PlaylistItem
             holder.name.text = item.text
             holder.num.text = item.num
+
             Glide.with(holder.view)
                 .load(item.iv)
                 .into(holder.imageView)
+
             holder.view.setOnClickListener {
                 val intent = Intent(holder.view.context, PlaylistActivity::class.java)
                 holder.view.context.startActivity(intent)
@@ -52,7 +54,13 @@ class PlaylistItem(val text: String?, val num: String?, val iv: String?) : Item 
         }
     }
 
-    class ViewHolder(val view: View, val imageView: ImageView, val name: TextView, val num: TextView, val pop: ImageView) :
+    class ViewHolder(
+        val view: View,
+        val imageView: ImageView,
+        val name: TextView,
+        val num: TextView,
+        val pop: ImageView
+    ) :
         RecyclerView.ViewHolder(view)
 
     override val controller = Companion

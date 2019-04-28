@@ -30,7 +30,7 @@ object NetService {
         }
     }
 
-    fun getPlaylist(uid:Int, playListData: (Status, MyPlaylistBean?) -> (Unit)){
+    fun getPlaylist(uid: String?, playListData: (Status, MyPlaylistBean?) -> (Unit)) {
         val call = ApiService.getPlaylist(uid)
         launch {
             try {
@@ -45,5 +45,7 @@ object NetService {
             }
         }
     }
+
+    //fun getListInfo(id: String?, pla)
 }
 
