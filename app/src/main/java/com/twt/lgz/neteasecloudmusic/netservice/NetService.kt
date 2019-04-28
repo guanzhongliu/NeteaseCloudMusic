@@ -1,5 +1,6 @@
 package com.twt.lgz.neteasecloudmusic.netservice
 
+import com.twt.lgz.neteasecloudmusic.model.Bean.ListInfoBean
 import com.twt.lgz.neteasecloudmusic.model.Status
 import com.twt.lgz.neteasecloudmusic.model.Bean.LoginBean
 import com.twt.lgz.neteasecloudmusic.model.Bean.MyPlaylistBean
@@ -46,6 +47,20 @@ object NetService {
         }
     }
 
-    //fun getListInfo(id: String?, pla)
+    fun getListInfo(id: String?, ListData: (Status, ListInfoBean?) -> (Unit)) {
+        val call = ApiService.getListInfo(id)
+        launch {
+            try {
+                val listInfoBean = call.execute().body()
+                if (listInfoBean == null)
+                    ListData(Status.unmatched, null)
+                else
+                    ListData(Status.Success, listInfoBean)
+            } catch (e: Exception) {
+                ListData(Status.ERROR, null)
+                e.printStackTrace()
+            }
+        }
+    }
 }
 

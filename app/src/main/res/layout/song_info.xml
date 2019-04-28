@@ -2,28 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
+              android:layout_height="70dp"
               android:orientation="vertical"
               android:paddingLeft="16dp">
 
     <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
+                  android:layout_height="match_parent"
                   android:gravity="center_vertical"
                   android:paddingBottom="5dp"
                   android:paddingTop="5dp">
 
         <ImageView
                 android:id="@+id/index"
-                android:layout_width="25dp"
-                android:layout_height="29dp"
+                android:layout_width="35dp"
+                android:layout_height="42dp"
                 android:layout_marginRight="10dp"
                 android:src="@drawable/speaker"
                 android:visibility="gone"
                 tools:visibility="visible"/>
 
         <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -32,19 +32,22 @@
 
                 <TextView
                         android:id="@+id/song_name"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingTop="5dp"
                         android:layout_weight="1"
                         android:ellipsize="end"
                         android:lines="1"
                         android:textColor="@color/black"
-                        android:textSize="14sp"
+                        android:textSize="17sp"
                         tools:text="大风吹"/>
 
                 <ImageView
                         android:id="@+id/mv"
-                        android:layout_width="33dp"
-                        android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginTop="7dp"
+                        android:layout_width="34dp"
+                        android:layout_height="16dp"
                         android:src="@drawable/mv_64"/>
             </LinearLayout>
             <LinearLayout
@@ -55,26 +58,26 @@
                         android:id="@+id/artist"
                         android:layout_width="wrap_content"
                         android:layout_height="20dp"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="2dp"
                         android:drawablePadding="5dp"
-                        android:textSize="12sp"
+                        android:textSize="14sp"
                         android:gravity="center"
                         tools:text="草东没有派对"/>
                 <TextView
                         android:id="@+id/in_word"
                         android:layout_width="wrap_content"
                         android:layout_height="20dp"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="2dp"
                         android:drawablePadding="5dp"
-                        android:textSize="12sp"
+                        android:textSize="18sp"
                         android:gravity="center"
                         tools:text="-"/>
 
                 <TextView
                         android:id="@+id/album"
                         android:text="丑奴儿"
-                        android:layout_marginTop="5dp"
-                        android:textSize="12sp"
+                        android:layout_marginTop="2dp"
+                        android:textSize="14sp"
                         android:gravity="center"
                         android:layout_width="wrap_content"
                         android:layout_height="20dp"/>
@@ -90,8 +93,5 @@
                 android:src="@drawable/more_40"/>
     </LinearLayout>
 
-    <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider_color"/>
+
 </LinearLayout>

@@ -2,6 +2,7 @@ package com.twt.lgz.neteasecloudmusic.model
 
 
 import android.content.Intent
+import android.os.Bundle
 import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -19,7 +20,7 @@ import kotlinx.android.synthetic.main.song_info.view.*
 import org.jetbrains.anko.layoutInflater
 
 
-class PlaylistItem(val text: String?, val num: String?, val iv: String?) : Item {
+class PlaylistItem(val text: String?, val num: String?, val iv: String?, val id: String?) : Item {
 
     companion object : ItemController {
         override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -45,7 +46,10 @@ class PlaylistItem(val text: String?, val num: String?, val iv: String?) : Item 
                 .into(holder.imageView)
 
             holder.view.setOnClickListener {
+                val bundle = Bundle()
+                bundle.putString("id", item.id)
                 val intent = Intent(holder.view.context, PlaylistActivity::class.java)
+                intent.putExtras(bundle)
                 holder.view.context.startActivity(intent)
             }
             holder.pop.setOnClickListener {
@@ -66,7 +70,7 @@ class PlaylistItem(val text: String?, val num: String?, val iv: String?) : Item 
     override val controller = Companion
 }
 
-class PlaylistInfoItem(val text: String?, val num: String?) : Item {
+class PlaylistInfoItem(val name: String?, val artist: String?, val album: String?, val mv: String? ) : Item {
 
     companion object : ItemController {
         override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -86,8 +90,11 @@ class PlaylistInfoItem(val text: String?, val num: String?) : Item {
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: Item) {
             holder as ViewHolder
-            item as PlaylistItem
-            holder.name.text = item.text
+            item as PlaylistInfoItem
+            holder.name.text = item.name
+            holder.artist.text = item.artist
+            holder.album.text = item.album
+            holder.textView.text = " - "
 
         }
     }

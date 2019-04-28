@@ -45,7 +45,7 @@
                 android:id="@+id/playlist_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="4dp"
+                android:paddingTop="8dp"
                 android:maxLines="1"
                 android:textColor="@color/black"
                 android:text="最喜欢的歌单"
@@ -64,10 +64,6 @@
         />
 
     </LinearLayout>
-    <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_alignBottom="@id/iv_playlist"
-            android:background="@color/divider_color"/>
+
 
 </RelativeLayout>
