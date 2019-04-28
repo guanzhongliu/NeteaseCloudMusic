@@ -13,7 +13,6 @@ import cn.edu.twt.retrox.recyclerviewdsl.ItemManager
 import com.orhanobut.hawk.Hawk
 import com.twt.lgz.neteasecloudmusic.R
 import com.twt.lgz.neteasecloudmusic.model.Bean.MyPlaylistBean
-import com.twt.lgz.neteasecloudmusic.model.PlaylistInfoItem
 import com.twt.lgz.neteasecloudmusic.model.PlaylistItem
 import com.twt.lgz.neteasecloudmusic.model.Status
 import com.twt.lgz.neteasecloudmusic.netservice.NetService
@@ -80,7 +79,7 @@ class MainActivity : AppCompatActivity() {
     fun updatePlaylist() {
         val data = Hawk.get<List<MyPlaylistBean.PlaylistBean>>("playlist")
         data?.forEach {
-            val item = PlaylistItem(it.name, it.trackCount.toString() + "首")
+            val item = PlaylistItem(it.name, it.trackCount.toString() + "首", it.coverImgUrl)
             list.add(item)
         }
         playlist_rc.apply {
@@ -88,8 +87,8 @@ class MainActivity : AppCompatActivity() {
             itemAdapter = ItemAdapter(itemManager)
             adapter = itemAdapter
             layoutManager = LinearLayoutManager(this.context)
-
         }
+
     }
 
     companion object {
