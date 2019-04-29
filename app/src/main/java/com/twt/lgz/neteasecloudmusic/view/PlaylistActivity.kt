@@ -49,7 +49,7 @@ class PlaylistActivity : AppCompatActivity() {
                     }
                     com.twt.lgz.neteasecloudmusic.model.Status.unmatched -> Toast.makeText(
                         this@PlaylistActivity,
-                        "未获取歌单",
+                        "未获取歌单详情",
                         Toast.LENGTH_SHORT
                     ).show()
                     else -> Toast.makeText(
@@ -66,8 +66,9 @@ class PlaylistActivity : AppCompatActivity() {
 
     fun updatePlaylist(){
         val data = Hawk.get<ListInfoBean.PlaylistBean?>("listinfo")?.tracks
+        var i = 0
         data?.forEach {
-            val item = PlaylistInfoItem(it.name, it.ar!![0].name, it.al!!.name, "")
+            val item = PlaylistInfoItem(it.name, it.ar!![0].name, it.al!!.name, "", ++i, it.id)
             list.add(item)
         }
         playlist_info_rc.apply {

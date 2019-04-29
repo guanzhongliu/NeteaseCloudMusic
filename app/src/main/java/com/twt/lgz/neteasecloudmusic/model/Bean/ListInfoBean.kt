@@ -178,7 +178,7 @@ class ListInfoBean {
              */
 
             var name: String? = null
-            var id: Int = 0
+            var id: String? = null
             var pst: Int = 0
             var t: Int = 0
             var pop: Int = 0

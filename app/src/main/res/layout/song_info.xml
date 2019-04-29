@@ -3,6 +3,7 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="70dp"
+              android:background="?attr/selectableItemBackground"
               android:orientation="vertical"
               android:paddingLeft="16dp">
 
@@ -12,13 +13,16 @@
                   android:paddingBottom="5dp"
                   android:paddingTop="5dp">
 
-        <ImageView
+        <TextView
                 android:id="@+id/index"
                 android:layout_width="35dp"
                 android:layout_height="42dp"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/speaker"
-                android:visibility="gone"
+                android:text="1"
+                android:textSize="19sp"
+                android:paddingRight="8dp"
+                android:textStyle="italic"
+                android:gravity="center"
                 tools:visibility="visible"/>
 
         <LinearLayout
@@ -27,8 +31,10 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-            <LinearLayout android:layout_width="wrap_content"
-                          android:layout_height="wrap_content">
+            <LinearLayout
+                    android:layout_width="wrap_content"
+
+                    android:layout_height="wrap_content">
 
                 <TextView
                         android:id="@+id/song_name"
@@ -59,7 +65,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="20dp"
                         android:layout_marginTop="2dp"
-                        android:drawablePadding="5dp"
+                        android:paddingTop="3dp"
+                        android:drawablePadding="3dp"
                         android:textSize="14sp"
                         android:gravity="center"
                         tools:text="草东没有派对"/>
@@ -68,7 +75,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="20dp"
                         android:layout_marginTop="2dp"
-                        android:drawablePadding="5dp"
+                        android:drawablePadding="3dp"
                         android:textSize="18sp"
                         android:gravity="center"
                         tools:text="-"/>
@@ -77,6 +84,7 @@
                         android:id="@+id/album"
                         android:text="丑奴儿"
                         android:layout_marginTop="2dp"
+                        android:paddingTop="3dp"
                         android:textSize="14sp"
                         android:gravity="center"
                         android:layout_width="wrap_content"

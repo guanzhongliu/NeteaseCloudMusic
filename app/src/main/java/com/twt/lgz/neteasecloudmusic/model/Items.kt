@@ -14,6 +14,7 @@ import cn.edu.twt.retrox.recyclerviewdsl.ItemController
 import com.bumptech.glide.Glide
 import com.twt.lgz.neteasecloudmusic.R
 import com.twt.lgz.neteasecloudmusic.view.LoginActivity
+import com.twt.lgz.neteasecloudmusic.view.MusicActivity
 import com.twt.lgz.neteasecloudmusic.view.PlaylistActivity
 import kotlinx.android.synthetic.main.playlist_info.view.*
 import kotlinx.android.synthetic.main.song_info.view.*
@@ -53,7 +54,7 @@ class PlaylistItem(val text: String?, val num: String?, val iv: String?, val id:
                 holder.view.context.startActivity(intent)
             }
             holder.pop.setOnClickListener {
-
+                //popup_window
             }
         }
     }
@@ -70,7 +71,14 @@ class PlaylistItem(val text: String?, val num: String?, val iv: String?, val id:
     override val controller = Companion
 }
 
-class PlaylistInfoItem(val name: String?, val artist: String?, val album: String?, val mv: String? ) : Item {
+class PlaylistInfoItem(
+    val name: String?,
+    val artist: String?,
+    val album: String?,
+    val mv: String?,
+    val pos: Int,
+    val id: String?
+) : Item {
 
     companion object : ItemController {
         override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -95,7 +103,19 @@ class PlaylistInfoItem(val name: String?, val artist: String?, val album: String
             holder.artist.text = item.artist
             holder.album.text = item.album
             holder.textView.text = " - "
-            holder.index.visibility = View.GONE
+            holder.index.text = item.pos.toString()
+
+            holder.view.setOnClickListener {
+                val bundle = Bundle()
+                bundle.putString("id", item.id)
+                val intent = Intent(holder.view.context, MusicActivity::class.java)
+                intent.putExtras(bundle)
+                holder.view.context.startActivity(intent)
+            }
+
+            holder.view.more.setOnClickListener {
+                //popup_window
+            }
 
         }
     }
@@ -103,7 +123,7 @@ class PlaylistInfoItem(val name: String?, val artist: String?, val album: String
     class ViewHolder(
         val view: View,
         val iv_mv: ImageView,
-        val index: ImageView,
+        val index: TextView,
         val name: TextView,
         val artist: TextView,
         val album: TextView,
