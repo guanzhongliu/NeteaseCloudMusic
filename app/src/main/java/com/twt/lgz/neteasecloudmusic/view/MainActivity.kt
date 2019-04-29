@@ -13,6 +13,7 @@ import cn.edu.twt.retrox.recyclerviewdsl.ItemManager
 import com.orhanobut.hawk.Hawk
 import com.twt.lgz.neteasecloudmusic.R
 import com.twt.lgz.neteasecloudmusic.model.Bean.MyPlaylistBean
+import com.twt.lgz.neteasecloudmusic.model.LocalListItem
 import com.twt.lgz.neteasecloudmusic.model.PlaylistItem
 import com.twt.lgz.neteasecloudmusic.model.Status
 import com.twt.lgz.neteasecloudmusic.netservice.NetService
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var itemManager: ItemManager
     private lateinit var itemAdapter: ItemAdapter
-    val list: MutableList<Item> = arrayListOf()
+    private val list: MutableList<Item> = arrayListOf()
 
     @SuppressLint("CommitPrefEdits")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                         Hawk.put("playlist", data?.playlist)
                         updatePlaylist()
                     }
-                    Status.unmatched -> Toast.makeText(
+                    Status.UNMATCHED -> Toast.makeText(
                         this@MainActivity,
                         "未获取歌单",
                         Toast.LENGTH_SHORT
@@ -76,8 +77,13 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun updatePlaylist() {
+    private fun updatePlaylist() {
         val data = Hawk.get<List<MyPlaylistBean.PlaylistBean>>("playlist")
+        list.add(LocalListItem("本地音乐","(738)",""))
+        list.add(LocalListItem("下载管理","(726)",""))
+        list.add(LocalListItem("我的电台","(3)",""))
+        list.add(LocalListItem("我的收藏","(120)",""))
+
         data?.forEach {
             val item = PlaylistItem(it.name, it.trackCount + "首", it.coverImgUrl, it.id)
             list.add(item)

@@ -10,11 +10,8 @@ import cn.edu.twt.retrox.recyclerviewdsl.ItemManager
 import com.orhanobut.hawk.Hawk
 import com.twt.lgz.neteasecloudmusic.R
 import com.twt.lgz.neteasecloudmusic.model.Bean.ListInfoBean
-import com.twt.lgz.neteasecloudmusic.model.Bean.MyPlaylistBean
 import com.twt.lgz.neteasecloudmusic.model.PlaylistInfoItem
-import com.twt.lgz.neteasecloudmusic.model.PlaylistItem
 import com.twt.lgz.neteasecloudmusic.netservice.NetService
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_playlist.*
 import kotlinx.coroutines.android.UI
 import kotlinx.coroutines.launch
@@ -24,7 +21,7 @@ class PlaylistActivity : AppCompatActivity() {
     internal var id: String? = null
     private lateinit var itemManager: ItemManager
     private lateinit var itemAdapter: ItemAdapter
-    val list: MutableList<Item> = arrayListOf()
+    private val list: MutableList<Item> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +36,7 @@ class PlaylistActivity : AppCompatActivity() {
 
     }
 
-    fun initView() {
+    private fun initView() {
         NetService.getListInfo(id) { status, data ->
             launch(UI) {
                 when (status) {
@@ -47,7 +44,7 @@ class PlaylistActivity : AppCompatActivity() {
                         Hawk.put("listinfo", data?.playlist)
                         updatePlaylist()
                     }
-                    com.twt.lgz.neteasecloudmusic.model.Status.unmatched -> Toast.makeText(
+                    com.twt.lgz.neteasecloudmusic.model.Status.UNMATCHED -> Toast.makeText(
                         this@PlaylistActivity,
                         "未获取歌单详情",
                         Toast.LENGTH_SHORT
@@ -64,7 +61,7 @@ class PlaylistActivity : AppCompatActivity() {
 
     }
 
-    fun updatePlaylist(){
+    private fun updatePlaylist() {
         val data = Hawk.get<ListInfoBean.PlaylistBean?>("listinfo")?.tracks
         var i = 0
         data?.forEach {

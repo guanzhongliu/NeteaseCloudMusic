@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@color/white">
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground" />
+
+    <ImageView
+            android:id="@+id/local_icon"
+            android:src="@drawable/music_icn_local"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerVertical="true"
+            android:scaleType="centerCrop" />
+
+    <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/local_icon"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            tools:text="本地音乐" />
+
+    <TextView
+            android:id="@+id/count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/title"
+            android:textSize="17sp"
+            tools:text="(100)" />
+
+    <ImageView
+            android:id="@+id/local_speaker"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="25dp"
+            android:src="@drawable/speaker"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+</RelativeLayout>

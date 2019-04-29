@@ -46,7 +46,7 @@ class LoginActivity : AppCompatActivity() {
                                 startActivity<MainActivity>()
                                 finish()
                             }
-                            Status.unmatched -> Toast.makeText(
+                            Status.UNMATCHED -> Toast.makeText(
                                 this@LoginActivity,
                                 "密码错误",
                                 Toast.LENGTH_SHORT

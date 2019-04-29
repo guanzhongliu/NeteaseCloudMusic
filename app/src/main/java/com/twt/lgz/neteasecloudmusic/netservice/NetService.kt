@@ -14,7 +14,7 @@ object NetService {
             try {
                 val loginDataBean = call.execute().body()
                 if (loginDataBean == null)
-                    logData(Status.unmatched, null)
+                    logData(Status.UNMATCHED, null)
                 else
                     logData(Status.Success, loginDataBean)
             } catch (e: Exception) {
@@ -37,7 +37,7 @@ object NetService {
             try {
                 val myPlaylistBean = call.execute().body()
                 if (myPlaylistBean == null)
-                    playListData(Status.unmatched, null)
+                    playListData(Status.UNMATCHED, null)
                 else
                     playListData(Status.Success, myPlaylistBean)
             } catch (e: Exception) {
@@ -53,7 +53,7 @@ object NetService {
             try {
                 val listInfoBean = call.execute().body()
                 if (listInfoBean == null)
-                    ListData(Status.unmatched, null)
+                    ListData(Status.UNMATCHED, null)
                 else
                     ListData(Status.Success, listInfoBean)
             } catch (e: Exception) {
