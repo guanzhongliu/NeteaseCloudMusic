@@ -9,7 +9,7 @@ import com.twt.lgz.neteasecloudmusic.model.Status
 import com.twt.lgz.neteasecloudmusic.model.DataBase
 import com.twt.lgz.neteasecloudmusic.netservice.NetService
 import kotlinx.android.synthetic.main.layout_title.*
-import kotlinx.android.synthetic.main.loginmain.*
+import kotlinx.android.synthetic.main.activity_loginmain.*
 import kotlinx.coroutines.android.UI
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.startActivity
@@ -18,7 +18,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
-        setContentView(R.layout.loginmain)
+        setContentView(R.layout.activity_loginmain)
         back_button.setOnClickListener {
             finish()
         }

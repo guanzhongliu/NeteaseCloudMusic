@@ -1,9 +1,7 @@
 package com.twt.lgz.neteasecloudmusic.netservice
 
-import com.twt.lgz.neteasecloudmusic.model.Bean.ListInfoBean
+import com.twt.lgz.neteasecloudmusic.model.Bean.*
 import com.twt.lgz.neteasecloudmusic.model.Status
-import com.twt.lgz.neteasecloudmusic.model.Bean.LoginBean
-import com.twt.lgz.neteasecloudmusic.model.Bean.MyPlaylistBean
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -58,6 +56,38 @@ object NetService {
                     ListData(Status.Success, listInfoBean)
             } catch (e: Exception) {
                 ListData(Status.ERROR, null)
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun getMusicURL(id: String?, MusicData: (Status, MusicBean?) -> (Unit)) {
+        val call = ApiService.getMusicURL(id)
+        launch {
+            try {
+                val musicBean = call.execute().body()
+                if (musicBean == null)
+                    MusicData(Status.UNMATCHED, null)
+                else
+                    MusicData(Status.Success, musicBean)
+            } catch (e: Exception) {
+                MusicData(Status.ERROR, null)
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun checkMusic(id: String, checkData: (Status, CheckBean?) -> (Unit)) {
+        val call = ApiService.checkMusic(id)
+        launch {
+            try {
+                val checkBean = call.execute().body()
+                if (checkBean == null)
+                    checkData(Status.UNMATCHED, null)
+                else
+                    checkData(Status.Success, checkBean)
+            } catch (e: Exception) {
+                checkData(Status.ERROR, null)
                 e.printStackTrace()
             }
         }

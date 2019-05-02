@@ -1,9 +1,7 @@
 package com.twt.lgz.neteasecloudmusic.netservice
 
-import com.twt.lgz.neteasecloudmusic.model.Bean.ListInfoBean
-import com.twt.lgz.neteasecloudmusic.model.Bean.LoginBean
+import com.twt.lgz.neteasecloudmusic.model.Bean.*
 import com.twt.lgz.neteasecloudmusic.model.MainModel
-import com.twt.lgz.neteasecloudmusic.model.Bean.MyPlaylistBean
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.GET
@@ -21,5 +19,13 @@ interface ApiService {
 
     @GET("/playlist/detail")
     fun getListInfo(@Query("id") id: String?): Call<ListInfoBean>
+
+    @GET("/song/url")
+    fun getMusicURL(@Query("id") id: String?): Call<MusicBean>
+
+    @GET("/check/music")
+    fun checkMusic(@Query("id") id: String?): Call<CheckBean>
+
+
     companion object : ApiService by MainModel()
 }

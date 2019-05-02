@@ -79,10 +79,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun updatePlaylist() {
         val data = Hawk.get<List<MyPlaylistBean.PlaylistBean>>("playlist")
-        list.add(LocalListItem("本地音乐","(738)",""))
-        list.add(LocalListItem("下载管理","(726)",""))
-        list.add(LocalListItem("我的电台","(3)",""))
-        list.add(LocalListItem("我的收藏","(120)",""))
+        list.add(LocalListItem("本地音乐", "(738)", ""))
+        list.add(LocalListItem("下载管理", "(726)", ""))
+        list.add(LocalListItem("我的电台", "(3)", ""))
+        list.add(LocalListItem("我的收藏", "(120)", ""))
 
         data?.forEach {
             val item = PlaylistItem(it.name, it.trackCount + "首", it.coverImgUrl, it.id)

@@ -22,7 +22,7 @@
 
         <Button
                 android:id="@+id/back_button"
-                android:layout_width="70dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:textColor="@color/white"
                 android:drawablePadding="6dp"

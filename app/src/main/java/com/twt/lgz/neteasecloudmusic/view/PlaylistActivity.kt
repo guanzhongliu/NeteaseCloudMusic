@@ -41,7 +41,7 @@ class PlaylistActivity : AppCompatActivity() {
             launch(UI) {
                 when (status) {
                     com.twt.lgz.neteasecloudmusic.model.Status.Success -> {
-                        Hawk.put("listinfo", data?.playlist)
+                        Hawk.put("listinfo$id", data?.playlist)
                         updatePlaylist()
                     }
                     com.twt.lgz.neteasecloudmusic.model.Status.UNMATCHED -> Toast.makeText(
