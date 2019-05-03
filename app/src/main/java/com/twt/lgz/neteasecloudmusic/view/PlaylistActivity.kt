@@ -9,9 +9,9 @@ import cn.edu.twt.retrox.recyclerviewdsl.ItemAdapter
 import cn.edu.twt.retrox.recyclerviewdsl.ItemManager
 import com.orhanobut.hawk.Hawk
 import com.twt.lgz.neteasecloudmusic.R
-import com.twt.lgz.neteasecloudmusic.model.Bean.ListInfoBean
+import com.twt.lgz.neteasecloudmusic.model.bean.ListInfoBean
 import com.twt.lgz.neteasecloudmusic.model.PlaylistInfoItem
-import com.twt.lgz.neteasecloudmusic.netservice.NetService
+import com.twt.lgz.neteasecloudmusic.service.NetService
 import kotlinx.android.synthetic.main.activity_playlist.*
 import kotlinx.coroutines.android.UI
 import kotlinx.coroutines.launch
@@ -62,7 +62,7 @@ class PlaylistActivity : AppCompatActivity() {
     }
 
     private fun updatePlaylist() {
-        val data = Hawk.get<ListInfoBean.PlaylistBean?>("listinfo")?.tracks
+        val data = Hawk.get<ListInfoBean.PlaylistBean?>("listinfo$id")?.tracks
         var i = 0
         data?.forEach {
             val item = PlaylistInfoItem(it.name, it.ar!![0].name, it.al!!.name, "", ++i, it.id)

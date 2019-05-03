@@ -7,7 +7,7 @@ import android.widget.Toast
 import com.twt.lgz.neteasecloudmusic.R
 import com.twt.lgz.neteasecloudmusic.model.Status
 import com.twt.lgz.neteasecloudmusic.model.DataBase
-import com.twt.lgz.neteasecloudmusic.netservice.NetService
+import com.twt.lgz.neteasecloudmusic.service.NetService
 import kotlinx.android.synthetic.main.layout_title.*
 import kotlinx.android.synthetic.main.activity_loginmain.*
 import kotlinx.coroutines.android.UI

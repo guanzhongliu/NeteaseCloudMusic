@@ -1,7 +1,7 @@
 package com.twt.lgz.neteasecloudmusic.model
 
 import android.content.SharedPreferences
-import com.twt.lgz.neteasecloudmusic.model.Bean.LoginBean
+import com.twt.lgz.neteasecloudmusic.model.bean.LoginBean
 
 object DataBase {
     fun dataUpdate(share: SharedPreferences, loginBean: LoginBean, phone: String, pwd: String) {

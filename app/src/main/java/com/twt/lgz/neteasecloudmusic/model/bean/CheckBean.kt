@@ -1,4 +1,4 @@
-package com.twt.lgz.neteasecloudmusic.model.Bean
+package com.twt.lgz.neteasecloudmusic.model.bean
 
 class CheckBean {
     /**

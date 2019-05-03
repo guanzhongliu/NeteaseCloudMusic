@@ -1,6 +1,6 @@
-package com.twt.lgz.neteasecloudmusic.netservice
+package com.twt.lgz.neteasecloudmusic.service
 
-import com.twt.lgz.neteasecloudmusic.model.Bean.*
+import com.twt.lgz.neteasecloudmusic.model.bean.*
 import com.twt.lgz.neteasecloudmusic.model.Status
 import kotlinx.coroutines.launch
 import java.lang.Exception

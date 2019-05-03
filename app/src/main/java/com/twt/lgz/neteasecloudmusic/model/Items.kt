@@ -5,20 +5,16 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import cn.edu.twt.retrox.recyclerviewdsl.Item
 import cn.edu.twt.retrox.recyclerviewdsl.ItemController
 import com.bumptech.glide.Glide
-import com.orhanobut.hawk.Hawk
 import com.twt.lgz.neteasecloudmusic.R
-import com.twt.lgz.neteasecloudmusic.netservice.NetService
-import com.twt.lgz.neteasecloudmusic.view.LoginActivity
+import com.twt.lgz.neteasecloudmusic.service.NetService
 import com.twt.lgz.neteasecloudmusic.view.MusicActivity
 import com.twt.lgz.neteasecloudmusic.view.PlaylistActivity
 import kotlinx.android.synthetic.main.local_service.view.*
@@ -26,7 +22,6 @@ import kotlinx.android.synthetic.main.playlist_info.view.*
 import kotlinx.android.synthetic.main.song_info.view.*
 import kotlinx.coroutines.android.UI
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.image
 import org.jetbrains.anko.layoutInflater
 import org.jetbrains.anko.textColor
 
@@ -97,6 +92,8 @@ class PlaylistInfoItem(
     val id: String?
 ) : Item {
 
+    val song_id: String? = id
+
     companion object : ItemController {
         override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
             val inflater = parent.context.layoutInflater
@@ -123,18 +120,19 @@ class PlaylistInfoItem(
             holder.album.text = item.album
             holder.textView.text = " - "
             holder.index.text = item.pos.toString()
-
             holder.view.setOnClickListener {
                 val bundle = Bundle()
                 bundle.putString("id", item.id)
+                bundle.putString("name", item.name)
+                bundle.putString("artist", item.artist)
                 val intent = Intent(holder.view.context, MusicActivity::class.java)
                 intent.putExtras(bundle)
                 if (holder.index.visibility == View.VISIBLE) {
                     NetService.checkMusic(item.id!!) { status, data ->
                         launch(UI) {
                             if (data?.message == "ok") {
-                                holder.index.visibility = View.GONE
-                                holder.playing.visibility = View.VISIBLE
+                                //holder.index.visibility = View.GONE
+                                //holder.playing.visibility = View.VISIBLE
                                 holder.view.context.startActivity(intent)
                             } else {
                                 holder.name.textColor = Color.GRAY
@@ -148,8 +146,8 @@ class PlaylistInfoItem(
                     }
 
                 } else {
-                    holder.index.visibility = View.VISIBLE
-                    holder.playing.visibility = View.GONE
+                    //holder.index.visibility = View.VISIBLE
+                    //holder.playing.visibility = View.GONE
                 }
 
             }
