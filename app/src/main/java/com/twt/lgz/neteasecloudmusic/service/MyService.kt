@@ -5,10 +5,9 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
-import android.util.Log
 
 class MyService : Service() {
-    private var list: ArrayList<String?> = ArrayList()
+    private var playList: ArrayList<String?> = ArrayList()
     private var position = -1
     private var id: String? = ""
     private var url: String? = ""
@@ -28,10 +27,10 @@ class MyService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         id = intent?.getStringExtra("url")
-        Log.d("mmlist", "start! $id")
+
         if (id != null) {
             play(id)
-            mediaPlayer?.setOnErrorListener { mp, what, extra ->
+            mediaPlayer?.setOnErrorListener { _, _, _ ->
                 play(id)
                 false
             }
@@ -41,7 +40,7 @@ class MyService : Service() {
     }
 
     override fun onDestroy() {
-        Log.d("mmlisteee", list.size.toString())
+
         super.onDestroy()
     }
 
@@ -52,7 +51,7 @@ class MyService : Service() {
         mediaPlayer?.let {
             it.reset()
             try {
-                it.setDataSource(list[position])
+                it.setDataSource(playList[position])
                 it.prepare()
                 it.start()
                 return true
@@ -73,11 +72,10 @@ class MyService : Service() {
                 it.setDataSource(url)
                 it.prepare()
                 it.start()
-                if (!list.contains(url)) {
-                    list.add(url)
+                if (!playList.contains(url)) {
+                    playList.add(url)
                     position++
                 }
-                Log.d("mmlist", list.toString() + "!size! " + list.size.toString() + "!id! $id")
                 return true
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -88,19 +86,19 @@ class MyService : Service() {
 
     fun playNext() {
         position++
-        if (position >= list.size) {
+        if (position >= playList.size) {
             position = 0
         }
-        url = list[position]
+        url = playList[position]
         if (playByPosition(position)) mediaPlayer?.seekTo(0)
     }
 
     fun playPrior() {
         position--
         when (position) {
-            -1 -> position = list.size - 1
+            -1 -> position = playList.size - 1
         }
-        url = list[position]
+        url = playList[position]
         if (playByPosition(position)) mediaPlayer?.seekTo(0)
     }
 
@@ -115,7 +113,7 @@ class MyService : Service() {
     }
 
     fun isPlaying(): Boolean {
-        return mediaPlayer?.isPlaying ?: false
+        return mediaPlayer!!.isPlaying
     }
 
     fun getCurrentPosition(): Int {
@@ -123,7 +121,7 @@ class MyService : Service() {
     }
 
     fun getDuration(): Int {
-        return mediaPlayer?.duration ?: 3
+        return mediaPlayer?.duration?: 3
     }
 
     fun seekTo(position: Int) {

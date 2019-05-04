@@ -1,6 +1,5 @@
 package com.twt.lgz.neteasecloudmusic.view
 
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Intent
@@ -9,10 +8,10 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
-import android.util.Log
 import android.widget.*
 import com.orhanobut.hawk.Hawk
 import com.twt.lgz.neteasecloudmusic.R
+import com.twt.lgz.neteasecloudmusic.model.Status
 import com.twt.lgz.neteasecloudmusic.service.MyService
 import com.twt.lgz.neteasecloudmusic.service.NetService
 import kotlinx.android.synthetic.main.activity_music.*
@@ -24,15 +23,7 @@ class MusicActivity : AppCompatActivity() {
     internal var id: String? = null
     internal var name: String? = null
     private var artist: String? = null
-    private lateinit var priorButton: Button
-    private lateinit var nextButton: Button
-    private lateinit var pauseOrPlayButton: Button
-    private lateinit var image: ImageView
-    private lateinit var seekBar: SeekBar
-    private lateinit var totalTime: TextView
     private lateinit var currentTime: TextView
-    val musicList = ArrayList<String>()
-    private var animator: ObjectAnimator? = null
     private var myService: MyService? = null
     private var picUrl: String? = ""
     private var sCnn: ServiceConnection = object : ServiceConnection {
@@ -41,32 +32,28 @@ class MusicActivity : AppCompatActivity() {
 
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             myService = (service as MyService.MyBinder).getService()
-            if (musicList.isEmpty()) {
-                myService = null
-            }
-            handler.post(runnable)
+            handler.post(runnable_play)
+            //handler.post(runnable_seekbar)
         }
     }
     val handler = Handler()
-    val runnable = Runnable {
-        Log.d("runnable!", "run!")
+    val runnable_play = Runnable {
         myService?.let {
-            totalTime.text = convertToTime(it.getDuration())
-            currentTime.text = convertToTime(it.getCurrentPosition())
-            seekBar.progress = it.getCurrentPosition()
-            seekBar.max = it.getDuration()
+            total_time.text = convertToTime(it.getDuration())
+            current_time.text = convertToTime(it.getCurrentPosition())
+            seek_bar.progress = it.getCurrentPosition()
+            seek_bar.max = it.getDuration()
         }
     }
-    val runnable2 = object : Runnable {
-        //seekBar 自动移动。当前时间改变
-        override fun run() {
-            myService?.let {
-                currentTime.text = convertToTime(it.getCurrentPosition())
-                seekBar.progress = it.getCurrentPosition()
-            }
-            handler.postDelayed(this, 1L)
-        }
-    }
+//    val runnable_seekbar = object : Runnable {
+//        override fun run() {
+//            myService?.let {
+//                currentTime.text = convertToTime(it.getCurrentPosition())
+//                seek_bar.progress = it.getCurrentPosition()
+//            }
+//            handler.postDelayed(this, 1L)
+//        }
+//    }
 
 
     /***
@@ -86,10 +73,8 @@ class MusicActivity : AppCompatActivity() {
         }
         music_name.text = name
         music_artist.text = artist
-        initView()
-        setClick()
         getURL(id)
-        playNow()
+
 
     }
 
@@ -106,30 +91,24 @@ class MusicActivity : AppCompatActivity() {
         }
     }
 
-    private fun initView() {
-        priorButton = findViewById(R.id.playing_prior)
-        nextButton = findViewById(R.id.playing_next)
-        pauseOrPlayButton = findViewById(R.id.pause_play)
-        seekBar = findViewById(R.id.seekbar)
-        totalTime = findViewById(R.id.total_time)
-        currentTime = findViewById(R.id.current_time)
-    }
-
 
     private fun getURL(id: String?) {
 
         NetService.getMusicURL(id) { status, data ->
             launch(UI) {
                 when (status) {
-                    com.twt.lgz.neteasecloudmusic.model.Status.Success -> {
+                    Status.Success -> {
                         Hawk.put("musicinfo$id", data?.data?.get(0)?.url)
                         Toast.makeText(
                             this@MusicActivity,
                             "成功获取歌曲",
                             Toast.LENGTH_SHORT
                         ).show()
+
+                        setOnClick()
+                        playNow()
                     }
-                    com.twt.lgz.neteasecloudmusic.model.Status.UNMATCHED -> Toast.makeText(
+                    Status.UNMATCHED -> Toast.makeText(
                         this@MusicActivity,
                         "未获取歌曲详情",
                         Toast.LENGTH_SHORT
@@ -162,37 +141,36 @@ class MusicActivity : AppCompatActivity() {
         return totalTime
     }
 
-    private fun setClick() {
-        pauseOrPlayButton.setOnClickListener {
+    private fun setOnClick() {
+        pause_play.setOnClickListener {
             myService?.let {
+
                 if (it.isPlaying()) {
-                    pauseOrPlayButton.setBackgroundResource(R.drawable.play)
-                    animator?.pause()
+                    pause_play.setBackgroundResource(R.drawable.play)
                 } else {
-                    pauseOrPlayButton.setBackgroundResource(R.drawable.pause)
-                    animator?.resume()
+                    pause_play.setBackgroundResource(R.drawable.pause)
                 }
                 it.pauseOrPlay()
             }
         }
-        seekBar.setOnSeekBarChangeListener(
-            object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    if (fromUser) {
-                        seekBar?.let {
-                            myService?.seekTo(it.progress)
-                            currentTime.text = convertToTime(progress)
-                        }
-                    }
-
-                }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                }
-
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                }
-            })
+//        seek_bar.setOnSeekBarChangeListener(
+//            object : SeekBar.OnSeekBarChangeListener {
+//                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+//                    if (fromUser) {
+//                        seekBar?.let {
+//                            myService?.seekTo(it.progress)
+//                            currentTime.text = convertToTime(progress)
+//                        }
+//                    }
+//
+//                }
+//
+//                override fun onStartTrackingTouch(seekBar: SeekBar?) {
+//                }
+//
+//                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+//                }
+//            })
     }
 
 
