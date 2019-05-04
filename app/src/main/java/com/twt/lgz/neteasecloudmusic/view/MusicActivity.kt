@@ -150,7 +150,7 @@ class MusicActivity : AppCompatActivity() {
                 } else {
                     pause_play.setBackgroundResource(R.drawable.pause)
                 }
-                it.pauseOrPlay()
+                it.playingControl()
             }
         }
 //        seek_bar.setOnSeekBarChangeListener(

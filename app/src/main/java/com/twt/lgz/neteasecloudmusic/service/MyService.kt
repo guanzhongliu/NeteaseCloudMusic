@@ -102,7 +102,7 @@ class MyService : Service() {
         if (playByPosition(position)) mediaPlayer?.seekTo(0)
     }
 
-    fun pauseOrPlay() {
+    fun playingControl() {
         mediaPlayer?.let {
             if (it.isPlaying) {
                 it.pause()
@@ -121,7 +121,7 @@ class MyService : Service() {
     }
 
     fun getDuration(): Int {
-        return mediaPlayer?.duration?: 3
+        return mediaPlayer?.duration?: 4
     }
 
     fun seekTo(position: Int) {
