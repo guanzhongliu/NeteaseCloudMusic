@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.widget.*
+import com.bumptech.glide.Glide
 import com.orhanobut.hawk.Hawk
 import com.twt.lgz.neteasecloudmusic.R
 import com.twt.lgz.neteasecloudmusic.model.Status
@@ -81,11 +82,12 @@ class MusicActivity : AppCompatActivity() {
     @SuppressLint("ShowToast")
     private fun playNow() {
         val sIntent = Intent(this, MyService::class.java)
-        val url = Hawk.get("musicinfo$id", "")
+        val url = Hawk.get("musicurl$id", "")
         if (url != "") {
             sIntent.putExtra("url", url)
             startService(sIntent)
             bindService(sIntent, sCnn, BIND_AUTO_CREATE)
+            rotateView.play()
         } else {
             Toast.makeText(this, "获取歌曲url过程中出现了问题", Toast.LENGTH_SHORT)
         }
@@ -98,13 +100,12 @@ class MusicActivity : AppCompatActivity() {
             launch(UI) {
                 when (status) {
                     Status.Success -> {
-                        Hawk.put("musicinfo$id", data?.data?.get(0)?.url)
+                        Hawk.put("musicurl$id", data?.data?.get(0)?.url)
                         Toast.makeText(
                             this@MusicActivity,
                             "成功获取歌曲",
                             Toast.LENGTH_SHORT
                         ).show()
-
                         setOnClick()
                         playNow()
                     }
@@ -116,6 +117,31 @@ class MusicActivity : AppCompatActivity() {
                     else -> Toast.makeText(
                         this@MusicActivity,
                         "出现了问题T_T  $id",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+
+        }
+
+        NetService.getMusicDetail(id!!) { status, data ->
+            launch(UI) {
+                when (status) {
+                    Status.Success -> {
+                        Hawk.put("musicpic$id", data?.songs?.get(0)?.al?.picUrl)
+                        val pic = Hawk.get("musicpic$id", "")
+                        Glide.with(this@MusicActivity)
+                            .load(pic)
+                            .into(rotateView)
+                    }
+                    Status.UNMATCHED -> Toast.makeText(
+                        this@MusicActivity,
+                        "未获取歌曲图片",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    else -> Toast.makeText(
+                        this@MusicActivity,
+                        "图片出现了问题T_T  $id",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -144,11 +170,12 @@ class MusicActivity : AppCompatActivity() {
     private fun setOnClick() {
         pause_play.setOnClickListener {
             myService?.let {
-
                 if (it.isPlaying()) {
                     pause_play.setBackgroundResource(R.drawable.play)
+                    rotateView.pause()
                 } else {
                     pause_play.setBackgroundResource(R.drawable.pause)
+                    rotateView.play()
                 }
                 it.playingControl()
             }

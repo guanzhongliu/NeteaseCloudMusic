@@ -2,6 +2,7 @@ package com.twt.lgz.neteasecloudmusic.model
 
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import cn.edu.twt.retrox.recyclerviewdsl.Item
 import cn.edu.twt.retrox.recyclerviewdsl.ItemController
 import com.bumptech.glide.Glide
@@ -135,6 +137,7 @@ class PlaylistInfoItem(
                                 //holder.playing.visibility = View.VISIBLE
                                 holder.view.context.startActivity(intent)
                             } else {
+                                Toast.makeText(holder.view.context, "抱歉，当前无资源，正在努力争取中T_T", Toast.LENGTH_LONG).show()
                                 holder.name.textColor = Color.GRAY
                                 holder.album.textColor = Color.GRAY
                                 holder.artist.textColor = Color.GRAY

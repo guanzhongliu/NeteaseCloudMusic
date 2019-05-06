@@ -92,5 +92,21 @@ object NetService {
             }
         }
     }
+
+    fun getMusicDetail(ids: String, checkData: (Status, MusicDetailBean?) -> (Unit)) {
+        val call = ApiService.getMusicDetail(ids)
+        launch {
+            try {
+                val checkBean = call.execute().body()
+                if (checkBean == null)
+                    checkData(Status.UNMATCHED, null)
+                else
+                    checkData(Status.Success, checkBean)
+            } catch (e: Exception) {
+                checkData(Status.ERROR, null)
+                e.printStackTrace()
+            }
+        }
+    }
 }
 

@@ -26,6 +26,9 @@ interface ApiService {
     @GET("/check/music")
     fun checkMusic(@Query("id") id: String?): Call<CheckBean>
 
+    @GET("/song/detail?")
+    fun getMusicDetail(@Query("ids") ids: String?): Call<MusicDetailBean>
+
 
     companion object : ApiService by MainModel()
 }
