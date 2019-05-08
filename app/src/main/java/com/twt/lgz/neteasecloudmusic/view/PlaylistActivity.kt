@@ -11,6 +11,7 @@ import com.orhanobut.hawk.Hawk
 import com.twt.lgz.neteasecloudmusic.R
 import com.twt.lgz.neteasecloudmusic.model.bean.ListInfoBean
 import com.twt.lgz.neteasecloudmusic.model.PlaylistInfoItem
+import com.twt.lgz.neteasecloudmusic.model.Status
 import com.twt.lgz.neteasecloudmusic.service.NetService
 import kotlinx.android.synthetic.main.activity_playlist.*
 import kotlinx.coroutines.android.UI
@@ -40,11 +41,11 @@ class PlaylistActivity : AppCompatActivity() {
         NetService.getListInfo(id) { status, data ->
             launch(UI) {
                 when (status) {
-                    com.twt.lgz.neteasecloudmusic.model.Status.Success -> {
+                    Status.Success -> {
                         Hawk.put("listinfo$id", data?.playlist)
                         updatePlaylist()
                     }
-                    com.twt.lgz.neteasecloudmusic.model.Status.UNMATCHED -> Toast.makeText(
+                    Status.UNMATCHED -> Toast.makeText(
                         this@PlaylistActivity,
                         "未获取歌单详情",
                         Toast.LENGTH_SHORT

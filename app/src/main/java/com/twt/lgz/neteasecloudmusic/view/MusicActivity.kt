@@ -24,9 +24,8 @@ class MusicActivity : AppCompatActivity() {
     internal var id: String? = null
     internal var name: String? = null
     private var artist: String? = null
-    private lateinit var currentTime: TextView
     private var myService: MyService? = null
-    private var picUrl: String? = ""
+    val handler = Handler()
     private var sCnn: ServiceConnection = object : ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName?) {
         }
@@ -37,7 +36,7 @@ class MusicActivity : AppCompatActivity() {
             //handler.post(runnable_seekbar)
         }
     }
-    val handler = Handler()
+
     val runnable_play = Runnable {
         myService?.let {
             total_time.text = convertToTime(it.getDuration())
@@ -46,15 +45,15 @@ class MusicActivity : AppCompatActivity() {
             seek_bar.max = it.getDuration()
         }
     }
-//    val runnable_seekbar = object : Runnable {
-//        override fun run() {
-//            myService?.let {
-//                currentTime.text = convertToTime(it.getCurrentPosition())
-//                seek_bar.progress = it.getCurrentPosition()
-//            }
-//            handler.postDelayed(this, 1L)
-//        }
-//    }
+    val runnable_seekbar = object : Runnable {
+        override fun run() {
+            myService?.let {
+                current_time.text = convertToTime(it.getCurrentPosition())
+                seek_bar.progress = it.getCurrentPosition()
+            }
+            handler.postDelayed(this, 1L)
+        }
+    }
 
 
     /***
@@ -74,8 +73,14 @@ class MusicActivity : AppCompatActivity() {
         }
         music_name.text = name
         music_artist.text = artist
+        current_time.text = "0:00"
         getURL(id)
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        handler.post(runnable_seekbar)
 
     }
 
@@ -95,63 +100,74 @@ class MusicActivity : AppCompatActivity() {
 
 
     private fun getURL(id: String?) {
-
-        NetService.getMusicURL(id) { status, data ->
-            launch(UI) {
-                when (status) {
-                    Status.Success -> {
-                        Hawk.put("musicurl$id", data?.data?.get(0)?.url)
-                        Toast.makeText(
+        if (Hawk.get("musicurl$id", "") == "") {
+            NetService.getMusicURL(id) { status, data ->
+                launch(UI) {
+                    when (status) {
+                        Status.Success -> {
+                            Hawk.put("musicurl$id", data?.data?.get(0)?.url)
+                            Toast.makeText(
+                                this@MusicActivity,
+                                "成功获取歌曲",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            playNow()
+                            setOnClick()
+                        }
+                        Status.UNMATCHED -> Toast.makeText(
                             this@MusicActivity,
-                            "成功获取歌曲",
+                            "未获取歌曲详情",
                             Toast.LENGTH_SHORT
                         ).show()
-                        setOnClick()
-                        playNow()
+                        else -> Toast.makeText(
+                            this@MusicActivity,
+                            "出现了问题T_T  $id",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
-                    Status.UNMATCHED -> Toast.makeText(
-                        this@MusicActivity,
-                        "未获取歌曲详情",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    else -> Toast.makeText(
-                        this@MusicActivity,
-                        "出现了问题T_T  $id",
-                        Toast.LENGTH_LONG
-                    ).show()
                 }
             }
-
+        } else {
+            playNow()
+            setOnClick()
         }
 
-        NetService.getMusicDetail(id!!) { status, data ->
-            launch(UI) {
-                when (status) {
-                    Status.Success -> {
-                        Hawk.put("musicpic$id", data?.songs?.get(0)?.al?.picUrl)
-                        val pic = Hawk.get("musicpic$id", "")
-                        Glide.with(this@MusicActivity)
-                            .load(pic)
-                            .into(rotateView)
+        if (Hawk.get("musicpic$id", "") == "") {
+            NetService.getMusicDetail(id!!) { status, data ->
+                launch(UI) {
+                    when (status) {
+                        Status.Success -> {
+                            Hawk.put("musicpic$id", data?.songs?.get(0)?.al?.picUrl)
+                            val pic = Hawk.get("musicpic$id", "")
+                            Glide.with(this@MusicActivity)
+                                .load(pic)
+                                .into(rotateView)
+                        }
+                        Status.UNMATCHED -> Toast.makeText(
+                            this@MusicActivity,
+                            "未获取歌曲图片",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        else -> Toast.makeText(
+                            this@MusicActivity,
+                            "图片出现了问题T_T  $id",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
-                    Status.UNMATCHED -> Toast.makeText(
-                        this@MusicActivity,
-                        "未获取歌曲图片",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    else -> Toast.makeText(
-                        this@MusicActivity,
-                        "图片出现了问题T_T  $id",
-                        Toast.LENGTH_LONG
-                    ).show()
                 }
-            }
 
+            }
+        } else {
+            val pic = Hawk.get("musicpic$id", "")
+            Glide.with(this@MusicActivity)
+                .load(pic)
+                .into(rotateView)
         }
+
 
     }
 
-    fun convertToTime(number: Int): String {
+    private fun convertToTime(number: Int): String {
         val time = number / 1000
         val minute = time / 60
         val second = time - minute * 60
@@ -180,24 +196,24 @@ class MusicActivity : AppCompatActivity() {
                 it.playingControl()
             }
         }
-//        seek_bar.setOnSeekBarChangeListener(
-//            object : SeekBar.OnSeekBarChangeListener {
-//                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-//                    if (fromUser) {
-//                        seekBar?.let {
-//                            myService?.seekTo(it.progress)
-//                            currentTime.text = convertToTime(progress)
-//                        }
-//                    }
-//
-//                }
-//
-//                override fun onStartTrackingTouch(seekBar: SeekBar?) {
-//                }
-//
-//                override fun onStopTrackingTouch(seekBar: SeekBar?) {
-//                }
-//            })
+        seek_bar.setOnSeekBarChangeListener(
+            object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    if (fromUser) {
+                        seekBar?.let {
+                            myService?.seekTo(it.progress)
+                            current_time.text = convertToTime(progress)
+                        }
+                    }
+
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                }
+            })
     }
 
 
