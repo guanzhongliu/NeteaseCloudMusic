@@ -19,6 +19,7 @@ import com.twt.lgz.neteasecloudmusic.R
 import com.twt.lgz.neteasecloudmusic.service.NetService
 import com.twt.lgz.neteasecloudmusic.view.MusicActivity
 import com.twt.lgz.neteasecloudmusic.view.PlaylistActivity
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import kotlinx.android.synthetic.main.local_service.view.*
 import kotlinx.android.synthetic.main.playlist_info.view.*
 import kotlinx.android.synthetic.main.song_info.view.*
@@ -203,6 +204,7 @@ class PlaylistItem(val text: String?, val num: String?, val iv: String?, val id:
 
             Glide.with(holder.view)
                 .load(item.iv)
+                .transform(RoundedCornersTransformation(40,0,RoundedCornersTransformation.CornerType.ALL))
                 .into(holder.imageView)
 
             holder.view.setOnClickListener {

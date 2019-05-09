@@ -48,5 +48,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'cn.edu.twt.retrox:recyclerviewdsl:1.1.0'
     implementation "com.orhanobut:hawk:2.0.1"
-
+    implementation 'jp.wasabeef:glide-transformations:4.0.1'
 }

@@ -5,13 +5,20 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
+import android.widget.Toast
+import com.twt.lgz.neteasecloudmusic.common.MusicPlayer
+import javax.security.auth.callback.Callback
 
-class MyService : Service() {
+class MyService : Service() , MediaPlayer.OnPreparedListener{
+    override fun onPrepared(mp: MediaPlayer?) {
+        mediaPlayer.start()
+    }
+
     private var playList: ArrayList<String?> = ArrayList()
     private var position = -1
     internal var id: String? = ""
     private var myBinder = MyBinder()
-    private var mediaPlayer: MediaPlayer? = null
+    private val mediaPlayer = MusicPlayer.musicPlayer
 
     inner class MyBinder : Binder() {
         fun getService(): MyService {
@@ -28,7 +35,7 @@ class MyService : Service() {
 
         if (id != null) {
             play(id)
-            mediaPlayer?.setOnErrorListener { _, _, _ ->
+            mediaPlayer.setOnErrorListener { _, _, _ ->
                 play(id)
                 false
             }
@@ -38,15 +45,15 @@ class MyService : Service() {
     }
 
     private fun playByPosition(position: Int): Boolean {
-        when (mediaPlayer) {
-            null -> mediaPlayer = MediaPlayer()
-        }
-        mediaPlayer?.let {
+        mediaPlayer.let {
             it.reset()
             try {
                 it.setDataSource(playList[position])
-                it.prepare()
-                it.start()
+                it.setOnPreparedListener{
+                    it.start()
+                }
+                it.prepareAsync()
+
                 return true
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -56,15 +63,15 @@ class MyService : Service() {
     }
 
     private fun play(url: String?): Boolean {
-        when (mediaPlayer) {
-            null -> mediaPlayer = MediaPlayer()
-        }
-        mediaPlayer?.let {
+        MusicPlayer.id = url!!
+        mediaPlayer.let {
             it.reset()
             try {
                 it.setDataSource(url)
-                it.prepare()
-                it.start()
+                it.setOnPreparedListener{
+                    it.start()
+                }
+                it.prepareAsync()
                 if (!playList.contains(url)) {
                     playList.add(url)
                     position++
@@ -83,7 +90,7 @@ class MyService : Service() {
             position = 0
         }
         id = playList[position]
-        if (playByPosition(position)) mediaPlayer?.seekTo(0)
+        if (playByPosition(position)) mediaPlayer.seekTo(0)
     }
 
     fun playPrior() {
@@ -92,11 +99,11 @@ class MyService : Service() {
             -1 -> position = playList.size - 1
         }
         id = playList[position]
-        if (playByPosition(position)) mediaPlayer?.seekTo(0)
+        if (playByPosition(position)) mediaPlayer.seekTo(0)
     }
 
     fun playingControl() {
-        mediaPlayer?.let {
+        mediaPlayer.let {
             if (it.isPlaying) {
                 it.pause()
             } else {
@@ -106,18 +113,19 @@ class MyService : Service() {
     }
 
     fun isPlaying(): Boolean {
-        return mediaPlayer!!.isPlaying
+        return mediaPlayer.isPlaying
     }
 
     fun getCurrentPosition(): Int {
-        return mediaPlayer?.currentPosition ?: 0
+        return mediaPlayer.currentPosition
     }
 
     fun getDuration(): Int {
-        return mediaPlayer?.duration ?: 4
+        return mediaPlayer.duration
     }
 
     fun seekTo(position: Int) {
-        mediaPlayer?.seekTo(position)
+        mediaPlayer.seekTo(position)
     }
+
 }

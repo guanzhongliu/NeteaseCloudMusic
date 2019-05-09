@@ -4,20 +4,26 @@ import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
+import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
+import android.view.View
 import android.widget.*
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
 import com.orhanobut.hawk.Hawk
-import com.twt.lgz.neteasecloudmusic.R
 import com.twt.lgz.neteasecloudmusic.model.Status
 import com.twt.lgz.neteasecloudmusic.service.MyService
 import com.twt.lgz.neteasecloudmusic.service.NetService
+import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_music.*
 import kotlinx.coroutines.android.UI
 import kotlinx.coroutines.launch
+import com.twt.lgz.neteasecloudmusic.R
+import jp.wasabeef.glide.transformations.ColorFilterTransformation
+
 
 class MusicActivity : AppCompatActivity() {
 
@@ -25,15 +31,16 @@ class MusicActivity : AppCompatActivity() {
     internal var name: String? = null
     private var artist: String? = null
     private var myService: MyService? = null
+
     val handler = Handler()
     private var sCnn: ServiceConnection = object : ServiceConnection {
-        override fun onServiceDisconnected(name: ComponentName?) {
-        }
-
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             myService = (service as MyService.MyBinder).getService()
             handler.post(runnable_play)
-            //handler.post(runnable_seekbar)
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+
         }
     }
 
@@ -63,6 +70,8 @@ class MusicActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_music)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        window.statusBarColor = Color.TRANSPARENT
         supportActionBar?.hide()
         val i = intent
         val b = i.extras
@@ -74,8 +83,8 @@ class MusicActivity : AppCompatActivity() {
         music_name.text = name
         music_artist.text = artist
         current_time.text = "0:00"
-        getURL(id)
 
+        getURL(id)
     }
 
     override fun onResume() {
@@ -142,6 +151,15 @@ class MusicActivity : AppCompatActivity() {
                             Glide.with(this@MusicActivity)
                                 .load(pic)
                                 .into(rotateView)
+                            val multi = MultiTransformation(
+                                BlurTransformation(100, 100),
+                                ColorFilterTransformation(0x696969)
+                            )
+                            Glide.with(this@MusicActivity)
+                                .load(pic)
+                                .transform(multi)
+                                .into(music_background)
+
                         }
                         Status.UNMATCHED -> Toast.makeText(
                             this@MusicActivity,
