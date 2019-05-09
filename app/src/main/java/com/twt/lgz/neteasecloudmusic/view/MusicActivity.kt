@@ -5,6 +5,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -24,6 +25,7 @@ import kotlinx.coroutines.android.UI
 import kotlinx.coroutines.launch
 import com.twt.lgz.neteasecloudmusic.R
 import jp.wasabeef.glide.transformations.ColorFilterTransformation
+import jp.wasabeef.glide.transformations.gpu.BrightnessFilterTransformation
 
 
 class MusicActivity : AppCompatActivity() {
@@ -47,7 +49,6 @@ class MusicActivity : AppCompatActivity() {
 
     val runnable_play = Runnable {
         myService?.let {
-            total_time.text = convertToTime(it.getDuration())
             current_time.text = convertToTime(it.getCurrentPosition())
             seek_bar.progress = it.getCurrentPosition()
             seek_bar.max = it.getDuration()
@@ -57,6 +58,8 @@ class MusicActivity : AppCompatActivity() {
         override fun run() {
             myService?.let {
                 current_time.text = convertToTime(it.getCurrentPosition())
+                total_time.text =  if(it.getDuration() > 0) convertToTime(it.getDuration()) else "00:00"
+                seek_bar.max = it.getDuration()
                 seek_bar.progress = it.getCurrentPosition()
             }
             handler.postDelayed(this, 1L)
@@ -81,17 +84,13 @@ class MusicActivity : AppCompatActivity() {
             name = b.getString("name")
             artist = b.getString("artist")
         }
-        music_name.text = name
-        music_artist.text = artist
-        current_time.text = "0:00"
-
+        initView()
         getURL(id)
     }
 
     override fun onResume() {
         super.onResume()
         handler.post(runnable_seekbar)
-
     }
 
     @SuppressLint("ShowToast")
@@ -107,7 +106,13 @@ class MusicActivity : AppCompatActivity() {
             Toast.makeText(this, "获取歌曲url过程中出现了问题", Toast.LENGTH_SHORT)
         }
     }
-
+    private fun initView(){
+        music_name.text = name
+        music_artist.text = artist
+        current_time.text = "0:00"
+        seek_bar.thumb.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_ATOP)
+        seek_bar.progressDrawable.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+    }
 
     private fun getURL(id: String?) {
         if (Hawk.get("musicurl$id", "") == "") {
@@ -116,11 +121,6 @@ class MusicActivity : AppCompatActivity() {
                     when (status) {
                         Status.Success -> {
                             Hawk.put("musicurl$id", data?.data?.get(0)?.url)
-                            Toast.makeText(
-                                this@MusicActivity,
-                                "成功获取歌曲",
-                                Toast.LENGTH_SHORT
-                            ).show()
                             playNow()
                             setOnClick()
                         }
@@ -194,8 +194,8 @@ class MusicActivity : AppCompatActivity() {
             .load(pic)
             .into(rotateView)
         val multi = MultiTransformation(
-            BlurTransformation(30, 25),
-            ColorFilterTransformation(0x555555)
+            ColorFilterTransformation(0x3F3F3F),
+            BlurTransformation(30, 20)
         )
         Glide.with(this@MusicActivity)
             .load(pic)

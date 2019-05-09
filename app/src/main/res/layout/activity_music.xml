@@ -12,6 +12,12 @@
             android:scaleType="fitXY"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+    <ImageView
+        android:id="@+id/filter_background"
+        android:src="#0F0F0F"
+        android:alpha="0.3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
     <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:id="@+id/fake_status_bar"

@@ -68,24 +68,23 @@
             </LinearLayout>
             <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:orientation="horizontal"
-                    android:layout_marginLeft="2dp">
+            >
                 <TextView
                         android:id="@+id/artist"
                         android:layout_width="wrap_content"
-                        android:layout_height="20dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:paddingTop="3dp"
                         android:drawablePadding="3dp"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:gravity="center"
                         tools:text="草东没有派对"/>
                 <TextView
                         android:id="@+id/in_word"
                         android:layout_width="wrap_content"
                         android:layout_height="20dp"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="1dp"
                         android:drawablePadding="3dp"
                         android:textSize="18sp"
                         android:gravity="center"
@@ -95,11 +94,11 @@
                         android:id="@+id/album"
                         android:text="丑奴儿"
                         android:layout_marginTop="2dp"
-                        android:paddingTop="3dp"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:gravity="center"
+                        android:singleLine="true"
                         android:layout_width="wrap_content"
-                        android:layout_height="20dp"/>
+                        android:layout_height="wrap_content"/>
             </LinearLayout>
         </LinearLayout>
 

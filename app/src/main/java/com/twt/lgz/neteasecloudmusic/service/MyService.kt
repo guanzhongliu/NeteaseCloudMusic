@@ -49,10 +49,12 @@ class MyService : Service() , MediaPlayer.OnPreparedListener{
             it.reset()
             try {
                 it.setDataSource(playList[position])
-                it.setOnPreparedListener{
-                    it.start()
-                }
-                it.prepareAsync()
+//                it.setOnPreparedListener{
+//                    it.start()
+//                }
+//                it.prepareAsync()
+                it.prepare()
+                it.start()
 
                 return true
             } catch (e: Exception) {
@@ -68,10 +70,12 @@ class MyService : Service() , MediaPlayer.OnPreparedListener{
             it.reset()
             try {
                 it.setDataSource(url)
-                it.setOnPreparedListener{
-                    it.start()
-                }
-                it.prepareAsync()
+//                it.setOnPreparedListener{
+//                    it.start()
+//                }
+//                it.prepareAsync()
+                it.prepare()
+                it.start()
                 if (!playList.contains(url)) {
                     playList.add(url)
                     position++
