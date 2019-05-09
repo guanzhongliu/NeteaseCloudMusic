@@ -27,7 +27,8 @@
     >
         <TextView
                 android:id="@+id/music_name"
-                android:layout_width="wrap_content"
+                android:ellipsize="marquee"
+                android:layout_width="250dp"
                 android:layout_height="25dp"
                 android:layout_marginTop="5dp"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -38,7 +39,7 @@
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="17sp"
-                android:gravity="center"/>
+                android:gravity="left"/>
         <TextView
                 android:id="@+id/music_artist"
                 android:layout_width="wrap_content"
@@ -84,6 +85,7 @@
                 app:layout_constraintStart_toStartOf="@id/playing_layout"
                 app:layout_constraintEnd_toEndOf="@id/playing_layout"
                 android:background="@drawable/pause"
+                android:backgroundTint="@color/white"
                 android:layout_width="40dp"
                 android:layout_height="40dp"/>
         <Button android:id="@+id/playing_prior"
@@ -91,6 +93,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/playing_layout"
                 app:layout_constraintRight_toLeftOf="@id/pause_play"
                 android:background="@drawable/prior"
+                android:backgroundTint="@color/white"
                 android:gravity="center"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -100,6 +103,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/playing_layout"
                 app:layout_constraintLeft_toRightOf="@id/pause_play"
                 android:background="@drawable/next"
+                android:backgroundTint="@color/white"
                 android:gravity="center"
                 android:layout_width="30dp"
                 android:layout_height="30dp"

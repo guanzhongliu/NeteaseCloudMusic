@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
+import android.text.TextUtils
 import android.view.View
 import android.widget.*
 import com.bumptech.glide.Glide
@@ -148,17 +149,7 @@ class MusicActivity : AppCompatActivity() {
                         Status.Success -> {
                             Hawk.put("musicpic$id", data?.songs?.get(0)?.al?.picUrl)
                             val pic = Hawk.get("musicpic$id", "")
-                            Glide.with(this@MusicActivity)
-                                .load(pic)
-                                .into(rotateView)
-                            val multi = MultiTransformation(
-                                BlurTransformation(100, 100),
-                                ColorFilterTransformation(0x696969)
-                            )
-                            Glide.with(this@MusicActivity)
-                                .load(pic)
-                                .transform(multi)
-                                .into(music_background)
+                            doGlide(pic)
 
                         }
                         Status.UNMATCHED -> Toast.makeText(
@@ -176,10 +167,7 @@ class MusicActivity : AppCompatActivity() {
 
             }
         } else {
-            val pic = Hawk.get("musicpic$id", "")
-            Glide.with(this@MusicActivity)
-                .load(pic)
-                .into(rotateView)
+                doGlide(Hawk.get("musicpic$id", ""))
         }
 
 
@@ -199,6 +187,20 @@ class MusicActivity : AppCompatActivity() {
         }
         totalTime += "$second"
         return totalTime
+    }
+
+    private fun doGlide(pic :String){
+        Glide.with(this@MusicActivity)
+            .load(pic)
+            .into(rotateView)
+        val multi = MultiTransformation(
+            BlurTransformation(30, 25),
+            ColorFilterTransformation(0x555555)
+        )
+        Glide.with(this@MusicActivity)
+            .load(pic)
+            .transform(multi)
+            .into(music_background)
     }
 
     private fun setOnClick() {
