@@ -1,18 +1,12 @@
-package com.twt.lgz.neteasecloudmusic.service
+package com.twt.lgz.neteasecloudmusic.common
 
 import android.app.Service
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
-import android.widget.Toast
-import com.twt.lgz.neteasecloudmusic.common.MusicPlayer
-import javax.security.auth.callback.Callback
 
-class MyService : Service() , MediaPlayer.OnPreparedListener{
-    override fun onPrepared(mp: MediaPlayer?) {
-        mediaPlayer.start()
-    }
+class MyService : Service() {
 
     private var playList: ArrayList<String?> = ArrayList()
     private var position = -1
@@ -24,6 +18,14 @@ class MyService : Service() , MediaPlayer.OnPreparedListener{
         fun getService(): MyService {
             return this@MyService
         }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        mediaPlayer.setOnPreparedListener {
+            it.start()
+        }
+
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -41,22 +43,22 @@ class MyService : Service() , MediaPlayer.OnPreparedListener{
             }
         }
 
-        return super.onStartCommand(intent, flags, startId)
+        return START_STICKY
     }
 
-    private fun playByPosition(position: Int): Boolean {
-        mediaPlayer.let {
-            it.reset()
+    private fun play(url: String?): Boolean {
+        MusicPlayer.id = url!!
+        mediaPlayer.apply {
+            reset()
             try {
-                it.setDataSource(playList[position])
-//                it.setOnPreparedListener{
-//                    it.start()
+                setDataSource(url)
+                prepareAsync()
+//                it.prepare()
+//                it.start()
+//                if (!playList.contains(url)) {
+//                    playList.add(url)
+//                    position++
 //                }
-//                it.prepareAsync()
-                it.prepare()
-                it.start()
-
-                return true
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -64,22 +66,16 @@ class MyService : Service() , MediaPlayer.OnPreparedListener{
         return false
     }
 
-    private fun play(url: String?): Boolean {
-        MusicPlayer.id = url!!
+    private fun playAll(position: Int): Boolean {
         mediaPlayer.let {
             it.reset()
             try {
-                it.setDataSource(url)
-//                it.setOnPreparedListener{
-//                    it.start()
-//                }
-//                it.prepareAsync()
-                it.prepare()
-                it.start()
-                if (!playList.contains(url)) {
-                    playList.add(url)
-                    position++
-                }
+                it.setDataSource(playList[position])
+                it.prepareAsync()
+//                it.prepare()
+//                it.start()
+
+
                 return true
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -94,7 +90,7 @@ class MyService : Service() , MediaPlayer.OnPreparedListener{
             position = 0
         }
         id = playList[position]
-        if (playByPosition(position)) mediaPlayer.seekTo(0)
+        if (playAll(position)) mediaPlayer.seekTo(0)
     }
 
     fun playPrior() {
@@ -103,15 +99,15 @@ class MyService : Service() , MediaPlayer.OnPreparedListener{
             -1 -> position = playList.size - 1
         }
         id = playList[position]
-        if (playByPosition(position)) mediaPlayer.seekTo(0)
+        if (playAll(position)) mediaPlayer.seekTo(0)
     }
 
     fun playingControl() {
-        mediaPlayer.let {
-            if (it.isPlaying) {
-                it.pause()
+        mediaPlayer.apply {
+            if (isPlaying) {
+                pause()
             } else {
-                it.start()
+                start()
             }
         }
     }

@@ -10,22 +10,21 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
-import android.text.TextUtils
 import android.view.View
 import android.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
 import com.orhanobut.hawk.Hawk
 import com.twt.lgz.neteasecloudmusic.model.Status
-import com.twt.lgz.neteasecloudmusic.service.MyService
+import com.twt.lgz.neteasecloudmusic.common.MyService
 import com.twt.lgz.neteasecloudmusic.service.NetService
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_music.*
 import kotlinx.coroutines.android.UI
 import kotlinx.coroutines.launch
 import com.twt.lgz.neteasecloudmusic.R
+import com.twt.lgz.neteasecloudmusic.common.MusicPlayer
 import jp.wasabeef.glide.transformations.ColorFilterTransformation
-import jp.wasabeef.glide.transformations.gpu.BrightnessFilterTransformation
 
 
 class MusicActivity : AppCompatActivity() {
@@ -34,8 +33,9 @@ class MusicActivity : AppCompatActivity() {
     internal var name: String? = null
     private var artist: String? = null
     private var myService: MyService? = null
-
     val handler = Handler()
+    //private val musicPlayer = MusicPlayer.musicPlayer
+
     private var sCnn: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             myService = (service as MyService.MyBinder).getService()
@@ -49,7 +49,7 @@ class MusicActivity : AppCompatActivity() {
 
     val runnable_play = Runnable {
         myService?.let {
-            current_time.text = convertToTime(it.getCurrentPosition())
+            current_time.text = cvt2Time(it.getCurrentPosition())
             seek_bar.progress = it.getCurrentPosition()
             seek_bar.max = it.getDuration()
         }
@@ -57,8 +57,8 @@ class MusicActivity : AppCompatActivity() {
     val runnable_seekbar = object : Runnable {
         override fun run() {
             myService?.let {
-                current_time.text = convertToTime(it.getCurrentPosition())
-                total_time.text =  if(it.getDuration() > 0) convertToTime(it.getDuration()) else "00:00"
+                current_time.text = cvt2Time(it.getCurrentPosition())
+                total_time.text =  if(it.getDuration() > 0) cvt2Time(it.getDuration()) else "loading"
                 seek_bar.max = it.getDuration()
                 seek_bar.progress = it.getCurrentPosition()
             }
@@ -93,15 +93,16 @@ class MusicActivity : AppCompatActivity() {
         handler.post(runnable_seekbar)
     }
 
+
     @SuppressLint("ShowToast")
-    private fun playNow() {
+    private fun playMusic() {
         val sIntent = Intent(this, MyService::class.java)
         val url = Hawk.get("musicurl$id", "")
         if (url != "") {
             sIntent.putExtra("url", url)
             startService(sIntent)
             bindService(sIntent, sCnn, BIND_AUTO_CREATE)
-            rotateView.play()
+            rotateView.start()
         } else {
             Toast.makeText(this, "获取歌曲url过程中出现了问题", Toast.LENGTH_SHORT)
         }
@@ -121,7 +122,7 @@ class MusicActivity : AppCompatActivity() {
                     when (status) {
                         Status.Success -> {
                             Hawk.put("musicurl$id", data?.data?.get(0)?.url)
-                            playNow()
+                            playMusic()
                             setOnClick()
                         }
                         Status.UNMATCHED -> Toast.makeText(
@@ -138,7 +139,7 @@ class MusicActivity : AppCompatActivity() {
                 }
             }
         } else {
-            playNow()
+            playMusic()
             setOnClick()
         }
 
@@ -173,7 +174,7 @@ class MusicActivity : AppCompatActivity() {
 
     }
 
-    private fun convertToTime(number: Int): String {
+    private fun cvt2Time(number: Int): String {
         val time = number / 1000
         val minute = time / 60
         val second = time - minute * 60
@@ -211,7 +212,7 @@ class MusicActivity : AppCompatActivity() {
                     rotateView.pause()
                 } else {
                     pause_play.setBackgroundResource(R.drawable.pause)
-                    rotateView.play()
+                    rotateView.start()
                 }
                 it.playingControl()
             }
@@ -222,7 +223,7 @@ class MusicActivity : AppCompatActivity() {
                     if (fromUser) {
                         seekBar?.let {
                             myService?.seekTo(it.progress)
-                            current_time.text = convertToTime(progress)
+                            current_time.text = cvt2Time(progress)
                         }
                     }
 

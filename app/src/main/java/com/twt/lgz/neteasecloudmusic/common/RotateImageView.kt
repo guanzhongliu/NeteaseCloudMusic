@@ -65,7 +65,7 @@ class RotateCircleImageView @JvmOverloads constructor(
         state = 2
     }
 
-    fun play() {
+    fun start() {
         if (state == 1)
             return
         if (state == 0)

@@ -1,8 +1,7 @@
-package com.twt.lgz.neteasecloudmusic.model
+package com.twt.lgz.neteasecloudmusic.view
 
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -17,8 +16,6 @@ import cn.edu.twt.retrox.recyclerviewdsl.ItemController
 import com.bumptech.glide.Glide
 import com.twt.lgz.neteasecloudmusic.R
 import com.twt.lgz.neteasecloudmusic.service.NetService
-import com.twt.lgz.neteasecloudmusic.view.MusicActivity
-import com.twt.lgz.neteasecloudmusic.view.PlaylistActivity
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import kotlinx.android.synthetic.main.local_service.view.*
 import kotlinx.android.synthetic.main.playlist_info.view.*

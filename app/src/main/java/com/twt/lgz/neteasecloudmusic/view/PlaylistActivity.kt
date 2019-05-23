@@ -10,7 +10,6 @@ import cn.edu.twt.retrox.recyclerviewdsl.ItemManager
 import com.orhanobut.hawk.Hawk
 import com.twt.lgz.neteasecloudmusic.R
 import com.twt.lgz.neteasecloudmusic.model.bean.ListInfoBean
-import com.twt.lgz.neteasecloudmusic.model.PlaylistInfoItem
 import com.twt.lgz.neteasecloudmusic.model.Status
 import com.twt.lgz.neteasecloudmusic.service.NetService
 import kotlinx.android.synthetic.main.activity_playlist.*
@@ -66,7 +65,14 @@ class PlaylistActivity : AppCompatActivity() {
         val data = Hawk.get<ListInfoBean.PlaylistBean?>("listinfo$id")?.tracks
         var i = 0
         data?.forEach {
-            val item = PlaylistInfoItem(it.name, it.ar!![0].name, it.al!!.name, "", ++i, it.id)
+            val item = PlaylistInfoItem(
+                it.name,
+                it.ar!![0].name,
+                it.al!!.name,
+                "",
+                ++i,
+                it.id
+            )
             list.add(item)
         }
         playlist_info_rc.apply {

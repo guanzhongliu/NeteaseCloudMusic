@@ -13,8 +13,6 @@ import cn.edu.twt.retrox.recyclerviewdsl.ItemManager
 import com.orhanobut.hawk.Hawk
 import com.twt.lgz.neteasecloudmusic.R
 import com.twt.lgz.neteasecloudmusic.model.bean.MyPlaylistBean
-import com.twt.lgz.neteasecloudmusic.model.LocalListItem
-import com.twt.lgz.neteasecloudmusic.model.PlaylistItem
 import com.twt.lgz.neteasecloudmusic.model.Status
 import com.twt.lgz.neteasecloudmusic.service.NetService
 import kotlinx.android.synthetic.main.activity_main.*
@@ -85,7 +83,8 @@ class MainActivity : AppCompatActivity() {
         list.add(LocalListItem("我的收藏", "(120)", ""))
 
         data?.forEach {
-            val item = PlaylistItem(it.name, it.trackCount + "首", it.coverImgUrl, it.id)
+            val item =
+                PlaylistItem(it.name, it.trackCount + "首", it.coverImgUrl, it.id)
             list.add(item)
         }
         playlist_rc.apply {

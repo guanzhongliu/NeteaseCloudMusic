@@ -4,5 +4,5 @@ import android.media.MediaPlayer
 
 object MusicPlayer{
     val musicPlayer = MediaPlayer()
-    lateinit var id: String
+    var id: String = ""
 }
