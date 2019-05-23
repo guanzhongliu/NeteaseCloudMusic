@@ -9,6 +9,7 @@ import android.graphics.PorterDuff
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.os.HandlerThread
 import android.os.IBinder
 import android.view.View
 import android.widget.*
@@ -27,45 +28,14 @@ import com.twt.lgz.neteasecloudmusic.common.MusicPlayer
 import jp.wasabeef.glide.transformations.ColorFilterTransformation
 
 
-class MusicActivity : AppCompatActivity() {
+class MusicActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
 
     internal var id: String? = null
     internal var name: String? = null
     private var artist: String? = null
-    private var myService: MyService? = null
-    val handler = Handler()
-    //private val musicPlayer = MusicPlayer.musicPlayer
-
-    private var sCnn: ServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            myService = (service as MyService.MyBinder).getService()
-            handler.post(runnable_play)
-        }
-
-        override fun onServiceDisconnected(name: ComponentName?) {
-
-        }
-    }
-
-    val runnable_play = Runnable {
-        myService?.let {
-            current_time.text = cvt2Time(it.getCurrentPosition())
-            seek_bar.progress = it.getCurrentPosition()
-            seek_bar.max = it.getDuration()
-        }
-    }
-    val runnable_seekbar = object : Runnable {
-        override fun run() {
-            myService?.let {
-                current_time.text = cvt2Time(it.getCurrentPosition())
-                total_time.text =  if(it.getDuration() > 0) cvt2Time(it.getDuration()) else "loading"
-                seek_bar.max = it.getDuration()
-                seek_bar.progress = it.getCurrentPosition()
-            }
-            handler.postDelayed(this, 1L)
-        }
-    }
-
+    private var handler: Handler? = null
+    private val musicPlayer = MusicPlayer.musicPlayer
+    private var threadState: Boolean = false
 
     /***
      * onCreate()
@@ -88,31 +58,60 @@ class MusicActivity : AppCompatActivity() {
         getURL(id)
     }
 
-    override fun onResume() {
-        super.onResume()
-        handler.post(runnable_seekbar)
+    @SuppressLint("SetTextI18n")
+    private val runnable = Runnable {
+        while (true) {//反复更新
+            seek_bar.progress = (musicPlayer.currentPosition * 100f / musicPlayer.duration).toInt()
+            if (threadState) break
+            runOnUiThread {
+                current_time.text = cvt2Time(musicPlayer.currentPosition)
+                total_time.text = cvt2Time(musicPlayer.duration)
+            }
+            Thread.sleep(100)
+        }
+    }
+
+    private fun addSeekerThread(){
+        val handlerThread = HandlerThread("SeekerThread")
+        handlerThread.start()
+        handler = Handler(handlerThread.looper)
+        handler!!.post(runnable)
+    }
+
+    override fun onDestroy() {
+        threadState = true//修改flag指标
+        if (handler != null) handler!!.removeCallbacks(runnable)
+        super.onDestroy()
     }
 
 
     @SuppressLint("ShowToast")
     private fun playMusic() {
-        val sIntent = Intent(this, MyService::class.java)
+
         val url = Hawk.get("musicurl$id", "")
         if (url != "") {
-            sIntent.putExtra("url", url)
-            startService(sIntent)
-            bindService(sIntent, sCnn, BIND_AUTO_CREATE)
-            rotateView.start()
+            if (MusicPlayer.id != id) {
+                MusicPlayer.play(url, id!!)
+                rotateView.start()
+            } else {
+                if (!MusicPlayer.isPlaying) {
+                    pause_play.setBackgroundResource(R.drawable.play)
+                } else rotateView.start()
+            }
+
+
         } else {
             Toast.makeText(this, "获取歌曲url过程中出现了问题", Toast.LENGTH_SHORT)
         }
+        addSeekerThread()
     }
-    private fun initView(){
+
+    private fun initView() {
         music_name.text = name
         music_artist.text = artist
         current_time.text = "0:00"
         seek_bar.thumb.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_ATOP)
-        seek_bar.progressDrawable.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+        seek_bar.progressDrawable.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
     }
 
     private fun getURL(id: String?) {
@@ -168,7 +167,7 @@ class MusicActivity : AppCompatActivity() {
 
             }
         } else {
-                doGlide(Hawk.get("musicpic$id", ""))
+            doGlide(Hawk.get("musicpic$id", ""))
         }
 
 
@@ -190,7 +189,7 @@ class MusicActivity : AppCompatActivity() {
         return totalTime
     }
 
-    private fun doGlide(pic :String){
+    private fun doGlide(pic: String) {
         Glide.with(this@MusicActivity)
             .load(pic)
             .into(rotateView)
@@ -206,36 +205,31 @@ class MusicActivity : AppCompatActivity() {
 
     private fun setOnClick() {
         pause_play.setOnClickListener {
-            myService?.let {
-                if (it.isPlaying()) {
-                    pause_play.setBackgroundResource(R.drawable.play)
-                    rotateView.pause()
-                } else {
-                    pause_play.setBackgroundResource(R.drawable.pause)
-                    rotateView.start()
-                }
-                it.playingControl()
+            if (MusicPlayer.isPlaying) {
+                MusicPlayer.pause()
+                pause_play.setBackgroundResource(R.drawable.play)
+                rotateView.pause()
+            } else {
+                MusicPlayer.endPause()
+                pause_play.setBackgroundResource(R.drawable.pause)
+                rotateView.start()
             }
         }
-        seek_bar.setOnSeekBarChangeListener(
-            object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    if (fromUser) {
-                        seekBar?.let {
-                            myService?.seekTo(it.progress)
-                            current_time.text = cvt2Time(progress)
-                        }
-                    }
-
-                }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                }
-
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                }
-            })
+        seek_bar.setOnSeekBarChangeListener(this)
     }
 
+    override fun onStartTrackingTouch(seekBar: SeekBar?) {
+    }
+
+    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+    }
+
+    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        if (fromUser) musicPlayer
+            .seekTo(
+                (progress.toDouble() / 100f * musicPlayer.duration)
+                    .toInt()
+            )
+    }
 
 }
