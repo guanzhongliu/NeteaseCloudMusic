@@ -2,7 +2,11 @@ package com.twt.lgz.neteasecloudmusic.common
 
 import android.media.MediaPlayer
 
-object MusicPlayer{
+object MusicPlayer : MediaPlayer.OnPreparedListener{
+    override fun onPrepared(mp: MediaPlayer?) {
+        musicPlayer.start()
+    }
+
     val musicPlayer = MediaPlayer()
     var id: String = ""
     val isPlaying
@@ -11,10 +15,11 @@ object MusicPlayer{
     fun play(url: String?, pid: String) {
         musicPlayer.stop()
         id = pid
-        musicPlayer.reset()//重置播放器
+        musicPlayer.reset()
         musicPlayer.setDataSource(url)
-        musicPlayer.prepare()
-        musicPlayer.start()
+        musicPlayer.prepareAsync()
+//        musicPlayer.prepare()
+//        musicPlayer.start()
     }
 
     fun pause() {
