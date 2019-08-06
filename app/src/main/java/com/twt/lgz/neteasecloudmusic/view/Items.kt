@@ -83,7 +83,7 @@ class LocalListItem(val text: String?, val num: String?, val status: String) : I
     override val controller = Companion
 }
 
-class PlaylistInfoItem(
+class SongInfoItem(
     val name: String?,
     val artist: String?,
     val album: String?,
@@ -114,7 +114,7 @@ class PlaylistInfoItem(
         @SuppressLint("ShowToast")
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: Item) {
             holder as ViewHolder
-            item as PlaylistInfoItem
+            item as SongInfoItem
             holder.name.text = item.name
             holder.artist.text = item.artist
             holder.album.text = item.album
@@ -201,7 +201,7 @@ class PlaylistItem(val text: String?, val num: String?, val iv: String?, val id:
 
             Glide.with(holder.view)
                 .load(item.iv)
-                .transform(RoundedCornersTransformation(40,0,RoundedCornersTransformation.CornerType.ALL))
+                .transform(RoundedCornersTransformation(40, 0, RoundedCornersTransformation.CornerType.ALL))
                 .into(holder.imageView)
 
             holder.view.setOnClickListener {

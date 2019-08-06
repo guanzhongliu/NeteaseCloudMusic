@@ -69,9 +69,9 @@ class RotateCircleImageView @JvmOverloads constructor(
         if (state == 1)
             return
         if (state == 0)
-            objectAnimator.start()//0停止，需要开始播放
+            objectAnimator.start()
         else
-            objectAnimator.resume()//暂停时就是继续播放
+            objectAnimator.resume()
         state = 1
     }
 }

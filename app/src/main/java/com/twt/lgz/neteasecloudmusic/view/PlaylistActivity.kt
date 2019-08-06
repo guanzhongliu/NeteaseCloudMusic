@@ -65,7 +65,7 @@ class PlaylistActivity : AppCompatActivity() {
         val data = Hawk.get<ListInfoBean.PlaylistBean?>("listinfo$id")?.tracks
         var i = 0
         data?.forEach {
-            val item = PlaylistInfoItem(
+            val item = SongInfoItem(
                 it.name,
                 it.ar!![0].name,
                 it.al!!.name,

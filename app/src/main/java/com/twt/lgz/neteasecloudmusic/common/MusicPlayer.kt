@@ -9,6 +9,7 @@ object MusicPlayer : MediaPlayer.OnPreparedListener{
 
     val musicPlayer = MediaPlayer()
     var id: String = ""
+
     val isPlaying
         get() = musicPlayer.isPlaying
 
@@ -18,6 +19,7 @@ object MusicPlayer : MediaPlayer.OnPreparedListener{
         musicPlayer.reset()
         musicPlayer.setDataSource(url)
         musicPlayer.prepareAsync()
+
 //        musicPlayer.prepare()
 //        musicPlayer.start()
     }
@@ -26,11 +28,12 @@ object MusicPlayer : MediaPlayer.OnPreparedListener{
         if (isPlaying) musicPlayer.pause()
     }
 
-    fun stop() {
-        if (isPlaying) musicPlayer.stop()
-    }
 
     fun endPause() {
         if (!isPlaying) musicPlayer.start()
+    }
+
+    fun stop() {
+        if (isPlaying) musicPlayer.stop()
     }
 }

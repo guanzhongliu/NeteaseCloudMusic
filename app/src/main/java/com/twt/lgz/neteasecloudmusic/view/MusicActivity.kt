@@ -1,23 +1,18 @@
 package com.twt.lgz.neteasecloudmusic.view
 
 import android.annotation.SuppressLint
-import android.content.ComponentName
-import android.content.Intent
-import android.content.ServiceConnection
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
-import android.os.IBinder
 import android.view.View
 import android.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
 import com.orhanobut.hawk.Hawk
 import com.twt.lgz.neteasecloudmusic.model.Status
-import com.twt.lgz.neteasecloudmusic.common.MyService
 import com.twt.lgz.neteasecloudmusic.service.NetService
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_music.*
@@ -58,11 +53,9 @@ class MusicActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         getURL(id)
     }
 
-    @SuppressLint("SetTextI18n")
-    private val runnable = Runnable {
-        while (true) {//反复更新
-            seek_bar.progress = (musicPlayer.currentPosition * 100f / musicPlayer.duration).toInt()
-            if (threadState) break
+    private val seekbarRunnable = Runnable {
+        while (!threadState) {
+            seek_bar.progress = (musicPlayer.currentPosition * 100 / musicPlayer.duration)
             runOnUiThread {
                 current_time.text = cvt2Time(musicPlayer.currentPosition)
                 total_time.text = cvt2Time(musicPlayer.duration)
@@ -71,16 +64,16 @@ class MusicActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         }
     }
 
-    private fun addSeekerThread(){
+    private fun addSeekerThread() {
         val handlerThread = HandlerThread("SeekerThread")
         handlerThread.start()
         handler = Handler(handlerThread.looper)
-        handler!!.post(runnable)
+        handler!!.post(seekbarRunnable)
     }
 
     override fun onDestroy() {
         threadState = true//修改flag指标
-        if (handler != null) handler!!.removeCallbacks(runnable)
+        if (handler != null) handler!!.removeCallbacks(seekbarRunnable)
         super.onDestroy()
     }
 
@@ -98,8 +91,6 @@ class MusicActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
                     pause_play.setBackgroundResource(R.drawable.play)
                 } else rotateView.start()
             }
-
-
         } else {
             Toast.makeText(this, "获取歌曲url过程中出现了问题", Toast.LENGTH_SHORT)
         }
@@ -150,7 +141,6 @@ class MusicActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
                             Hawk.put("musicpic$id", data?.songs?.get(0)?.al?.picUrl)
                             val pic = Hawk.get("musicpic$id", "")
                             doGlide(pic)
-
                         }
                         Status.UNMATCHED -> Toast.makeText(
                             this@MusicActivity,
@@ -227,7 +217,7 @@ class MusicActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         if (fromUser) musicPlayer
             .seekTo(
-                (progress.toDouble() / 100f * musicPlayer.duration)
+                (progress.toDouble() / 100 * musicPlayer.duration)
                     .toInt()
             )
     }
